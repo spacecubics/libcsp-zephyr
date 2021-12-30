@@ -1,0 +1,16 @@
+manifest:
+
+  projects:
+    - name: zephyr
+      url: https://github.com/zephyrproject-rtos/zephyr
+      revision: main
+      path: zephyr
+      west-commands: scripts/west-commands.yml
+
+    - name: cmsis
+      url: https://github.com/zephyrproject-rtos/cmsis
+      revision: b0612c97c1401feeb4160add6462c3627fe90fc7
+      path: modules/hal/cmsis
+
+  self:
+    path: libcsp-zephyr
