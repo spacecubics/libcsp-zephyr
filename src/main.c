@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include <ztest.h>
+#include <zephyr/ztest.h>
 
-static void test_assert(void)
+ZTEST(simple, simple_asert)
 {
 	zassert_true(1, "1 was false");
 	zassert_false(0, "0 was true");
@@ -16,10 +16,4 @@ static void test_assert(void)
 	zassert_equal_ptr(NULL, NULL, "NULL was not equal to NULL");
 }
 
-void test_main(void)
-{
-	ztest_test_suite(tests,
-			 ztest_unit_test(test_assert));
-
-	ztest_run_test_suite(tests);
-}
+ZTEST_SUITE(simple, NULL, NULL, NULL, NULL, NULL);
