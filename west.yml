@@ -10,3 +10,7 @@ manifest:
         name-allowlist:
           - cmsis
 
+    - name: libcsp
+      url: https://github.com/libcsp/libcsp
+      revision: develop
+      path: modules/lib/libcsp

@@ -5,6 +5,7 @@
  */
 
 #include <zephyr/ztest.h>
+#include <csp/csp.h>
 
 ZTEST(simple, simple_asert)
 {
