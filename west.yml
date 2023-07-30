@@ -6,11 +6,10 @@ manifest:
       revision: main
       path: zephyr
       west-commands: scripts/west-commands.yml
+      import:
+        name-allowlist:
+          - cmsis
 
-    - name: cmsis
-      url: https://github.com/zephyrproject-rtos/cmsis
-      revision: b0612c97c1401feeb4160add6462c3627fe90fc7
-      path: modules/hal/cmsis
 
   self:
     path: libcsp-zephyr
