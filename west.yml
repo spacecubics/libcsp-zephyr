@@ -10,6 +10,3 @@ manifest:
         name-allowlist:
           - cmsis
 
-
-  self:
-    path: libcsp-zephyr
