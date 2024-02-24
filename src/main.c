@@ -7,7 +7,7 @@
 #include <zephyr/ztest.h>
 #include <csp/csp.h>
 
-ZTEST(simple, simple_asert)
+ZTEST(simple, test_simple_asert)
 {
 	zassert_true(1, "1 was false");
 	zassert_false(0, "0 was true");
