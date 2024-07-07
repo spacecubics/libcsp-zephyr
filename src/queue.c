@@ -197,4 +197,48 @@ ZTEST(queue, test_queue_free)
 	zassert_equal(csp_queue_free(qh), qlength);
 }
 
+ZTEST(queue, test_queue_emtpy)
+{
+	char item1[] = "abc";
+
+	int qlength = 10;
+	int buf_size = qlength * sizeof(item1);
+	char buf[buf_size];
+
+	csp_queue_handle_t qh;
+	csp_static_queue_t q;
+
+	/* zero clear */
+	memset(buf, 0, buf_size);
+
+	csp_init();
+
+	/* create */
+	qh = csp_queue_create_static(qlength, sizeof(item1), buf, &q);
+
+	csp_queue_enqueue(qh, item1, 1000);
+	csp_queue_enqueue(qh, item1, 1000);
+	csp_queue_enqueue(qh, item1, 1000);
+	csp_queue_enqueue(qh, item1, 1000);
+
+	/* After enqueue, check the size */
+	zassert_equal(4, csp_queue_size(qh));
+
+	/* After empty, check the size */
+	csp_queue_empty(qh);
+	zassert_equal(0, csp_queue_size(qh));
+
+	/* It's ok to call queue_empty on an empty queue */
+	csp_queue_empty(qh);
+	zassert_equal(0, csp_queue_size(qh));
+
+	/* make it full */
+	for (int i = 0; i < qlength; i++) {
+		csp_queue_enqueue(qh, item1, 1000);
+	}
+	/* then empty it */
+	csp_queue_empty(qh);
+	zassert_equal(0, csp_queue_size(qh));
+}
+
 ZTEST_SUITE(queue, NULL, NULL, NULL, NULL, NULL);
