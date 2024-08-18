@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2024 Space Cubics, LLC.
  *
- * SPDX - License - Identifier: Apache - 2.0
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #include <zephyr/ztest.h>
