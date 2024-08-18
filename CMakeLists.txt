@@ -10,4 +10,5 @@ target_sources(app PRIVATE
   src/buffer.c
   src/crc32.c
   src/queue.c
+  src/rdp_queue.c
 )
