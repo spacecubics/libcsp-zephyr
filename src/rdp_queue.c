@@ -71,8 +71,8 @@ ZTEST(rdp_queue, test_rdp_queue_one)
 /* enqueue and dequeue test  */
 ZTEST(rdp_queue, test_rdp_queue_enqueue_dequeue)
 {
-	csp_packet_t *pEnqueuePacket;
-	csp_packet_t *pDequeuePacket;
+	csp_packet_t *enqueue_packet;
+	csp_packet_t *dequeue_packet;
 
 	/* create queue */
 	csp_rdp_queue_init();
@@ -80,24 +80,24 @@ ZTEST(rdp_queue, test_rdp_queue_enqueue_dequeue)
 
 	/* create packet */
 	csp_buffer_init();
-	pEnqueuePacket = csp_buffer_get(0);
-	zassert_not_null(pEnqueuePacket);
+	enqueue_packet = csp_buffer_get(0);
+	zassert_not_null(enqueue_packet);
 
 	/* enqueue */
-	csp_rdp_queue_tx_add(NULL, pEnqueuePacket);
+	csp_rdp_queue_tx_add(NULL, enqueue_packet);
 	int size = csp_rdp_queue_tx_size();
 	zassert_equal(1, size, "queue size is not 1. queue size is %d.", size);
 
 	/* dequeue */
-	pDequeuePacket = csp_rdp_queue_tx_get(NULL);
-	zassert_not_null(pDequeuePacket);
+	dequeue_packet = csp_rdp_queue_tx_get(NULL);
+	zassert_not_null(dequeue_packet);
 	size = csp_rdp_queue_tx_size();
 	zassert_equal(0, size, "queue size is not 0. queue size is %d.", size);
-	zassert_equal_ptr(pEnqueuePacket, pDequeuePacket);
+	zassert_equal_ptr(enqueue_packet, dequeue_packet);
 }
 
-/* test when queue size is MAX */
-ZTEST(rdp_queue, test_rdp_queue_MAX)
+/* test when queue size is max */
+ZTEST(rdp_queue, test_rdp_queue_max)
 {
 	csp_packet_t *packet;
 
@@ -118,19 +118,19 @@ ZTEST(rdp_queue, test_rdp_queue_MAX)
 	}
 
 	int size = csp_rdp_queue_tx_size();
-	zassert_equal(QUEUE_SIZE_MAX, size, "queue size is not MAX. queue size is %d.", size);
+	zassert_equal(QUEUE_SIZE_MAX, size, "queue size is not max. queue size is %d.", size);
 
-	/* can not add when queue size is MAX */
+	/* can not add when queue size is max */
 	packet = csp_buffer_get(0);
 	zassert_not_null(packet);
 	csp_rdp_queue_tx_add(NULL, packet);
 
 	size = csp_rdp_queue_tx_size();
-	zassert_equal(QUEUE_SIZE_MAX, size, "queue size is not MAX. queue size is %d.", size);
+	zassert_equal(QUEUE_SIZE_MAX, size, "queue size is not max. queue size is %d.", size);
 }
 
-/* queue up to Max, then dequeue all */
-ZTEST(rdp_queue, test_rdp_enqueue_MAX_and_dequeue)
+/* queue up to max, then dequeue all */
+ZTEST(rdp_queue, test_rdp_enqueue_max_and_dequeue)
 {
 	csp_packet_t *packet;
 
@@ -151,7 +151,7 @@ ZTEST(rdp_queue, test_rdp_enqueue_MAX_and_dequeue)
 	}
 
 	int size = csp_rdp_queue_tx_size();
-	zassert_equal(QUEUE_SIZE_MAX, size, "queue size is not MAX. queue size is %d.", size);
+	zassert_equal(QUEUE_SIZE_MAX, size, "queue size is not max. queue size is %d.", size);
 
 	/* dequeue all */
 	for (int i = QUEUE_SIZE_MAX; i > 0; i--) {
