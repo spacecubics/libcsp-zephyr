@@ -171,4 +171,59 @@ ZTEST(rdp_queue, test_rdp_enqueue_max_and_dequeue)
 	zassert_equal(0, size, "queue size is not 0. queue size is %d.", size);
 }
 
+/* queue flush test */
+ZTEST(rdp_queue, test_rdp_queue_flush)
+{
+	csp_conn_t *conn;
+	csp_packet_t *packet_tx;
+	csp_packet_t *packet_rx;
+
+	/* create connection */
+	csp_conn_init();
+	conn = csp_conn_allocate(CONN_CLIENT);
+
+	/* create queue */
+	csp_rdp_queue_init();
+	zassert_equal(0, csp_rdp_queue_tx_size());
+	zassert_equal(0, csp_rdp_queue_rx_size());
+
+	/* create packet */
+	csp_buffer_init();
+	packet_tx = csp_buffer_get(0);
+	zassert_not_null(packet_tx);
+	packet_rx = csp_buffer_get(0);
+	zassert_not_null(packet_rx);
+
+	/* enqueue */
+	csp_rdp_queue_tx_add(NULL, packet_tx);
+	int size = csp_rdp_queue_tx_size();
+	zassert_equal(1, size, "tx_queue size is not 1. tx_queue size is %d.", size);
+	csp_rdp_queue_rx_add(NULL, packet_rx);
+	size = csp_rdp_queue_rx_size();
+	zassert_equal(1, size, "rx_queue size is not 1. rx_queue size is %d.", size);
+
+	/* queue flush */
+	csp_rdp_queue_flush(conn);
+	size = csp_rdp_queue_tx_size();
+	zassert_equal(0, size, "tx_queue size is not 0. tx_queue size is %d.", size);
+	size = csp_rdp_queue_rx_size();
+	zassert_equal(0, size, "rx_queue size is not 0. rx_queue size is %d.", size);
+}
+
+/* uninitialized queue test */
+ZTEST(rdp_queue, test_queue_no_init)
+{
+	csp_packet_t *packet;
+
+	/* create packet */
+	csp_buffer_init();
+	packet = csp_buffer_get(0);
+	zassert_not_null(packet);
+
+	/* enqueue */
+	csp_rdp_queue_tx_add(NULL, packet);
+	int size = csp_rdp_queue_tx_size();
+	zassert_equal(1, size, "queue size is not 1. queue size is %d.", size);
+}
+
 ZTEST_SUITE(rdp_queue, NULL, NULL, NULL, NULL, NULL);
