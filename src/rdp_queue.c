@@ -9,11 +9,20 @@
 
 #define QUEUE_SIZE_MAX (CSP_RDP_MAX_WINDOW * 2)
 
+/** Connection types */
+typedef enum {
+	CONN_CLIENT = 0,
+	CONN_SERVER = 1,
+} csp_conn_type_t;
+
 void csp_rdp_queue_init(void);
+void csp_conn_init(void);
 int csp_rdp_queue_tx_size(void);
 int csp_rdp_queue_rx_size(void);
 void csp_rdp_queue_tx_add(csp_conn_t * conn, csp_packet_t * packet);
 void csp_rdp_queue_rx_add(csp_conn_t * conn, csp_packet_t * packet);
+void csp_rdp_queue_flush(csp_conn_t * conn);
+csp_conn_t * csp_conn_allocate(csp_conn_type_t type);
 csp_packet_t * csp_rdp_queue_tx_get(csp_conn_t * conn);
 csp_packet_t * csp_rdp_queue_rx_get(csp_conn_t * conn);
 
@@ -77,6 +86,7 @@ ZTEST(rdp_queue, test_rdp_queue_enqueue_dequeue)
 	/* create queue */
 	csp_rdp_queue_init();
 	zassert_equal(0, csp_rdp_queue_tx_size());
+	zassert_equal(0, csp_rdp_queue_rx_size());
 
 	/* create packet */
 	csp_buffer_init();
@@ -178,34 +188,35 @@ ZTEST(rdp_queue, test_rdp_queue_flush)
 	csp_packet_t *packet_tx;
 	csp_packet_t *packet_rx;
 
+	csp_init();
+
 	/* create connection */
-	csp_conn_init();
 	conn = csp_conn_allocate(CONN_CLIENT);
 
-	/* create queue */
-	csp_rdp_queue_init();
-	zassert_equal(0, csp_rdp_queue_tx_size());
-	zassert_equal(0, csp_rdp_queue_rx_size());
-
 	/* create packet */
-	csp_buffer_init();
 	packet_tx = csp_buffer_get(0);
-	zassert_not_null(packet_tx);
 	packet_rx = csp_buffer_get(0);
+	zassert_not_null(packet_tx);
 	zassert_not_null(packet_rx);
 
 	/* enqueue */
-	csp_rdp_queue_tx_add(NULL, packet_tx);
+	zassert_equal(0, csp_rdp_queue_tx_size());
+	zassert_equal(0, csp_rdp_queue_rx_size());
+
+	csp_rdp_queue_tx_add(conn, packet_tx);
 	int size = csp_rdp_queue_tx_size();
 	zassert_equal(1, size, "tx_queue size is not 1. tx_queue size is %d.", size);
-	csp_rdp_queue_rx_add(NULL, packet_rx);
+
+	csp_rdp_queue_rx_add(conn, packet_rx);
 	size = csp_rdp_queue_rx_size();
 	zassert_equal(1, size, "rx_queue size is not 1. rx_queue size is %d.", size);
 
 	/* queue flush */
 	csp_rdp_queue_flush(conn);
+
 	size = csp_rdp_queue_tx_size();
 	zassert_equal(0, size, "tx_queue size is not 0. tx_queue size is %d.", size);
+
 	size = csp_rdp_queue_rx_size();
 	zassert_equal(0, size, "rx_queue size is not 0. rx_queue size is %d.", size);
 }
