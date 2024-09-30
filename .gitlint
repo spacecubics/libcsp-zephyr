@@ -2,4 +2,4 @@
 regex-style-search=true
 
 [ignore-body-lines]
-regex=^(Signed-off|Acked|Co-Authored|Reported|Tested-by)-by:
+regex=^(Signed-off|Acked|Co-Authored|Reported|Tested)-by:
