@@ -9,6 +9,7 @@ manifest:
       import:
         name-allowlist:
           - cmsis
+          - cmsis_6
 
     - name: libcsp
       url: https://github.com/libcsp/libcsp
