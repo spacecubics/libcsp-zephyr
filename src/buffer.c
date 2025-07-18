@@ -23,7 +23,8 @@ ZTEST(buffer, test_buffer_count)
 	zassert_true(csp_buffer_remaining() == CSP_BUFFER_COUNT);
 
 	for (i = 0; i < CSP_BUFFER_COUNT; i++) {
-		packets[i] = csp_buffer_get(0);
+		/* csp_buffer_get_always() is the only way to get all buffers */
+		packets[i] = csp_buffer_get_always();
 		zassert_true(packets[i] != NULL, NULL);
 	}
 
@@ -44,12 +45,12 @@ ZTEST(buffer, test_buffer_over_allocate)
 
 	memset(packets, 0, sizeof(packets));
 
-	for (i = 0; i < CSP_BUFFER_COUNT; i++) {
+	for (i = 0; i < CSP_BUFFER_COUNT - 2; i++) {
 		packets[i] = csp_buffer_get(0);
 		zassert_true(packets[i] != NULL, NULL);
 	}
 
-	zassert_true(csp_buffer_remaining() == 0);
+	zassert_true(csp_buffer_remaining() == 2);
 	p = csp_buffer_get(0);
 	zassert_true(p == NULL, NULL);
 
